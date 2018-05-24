@@ -1,0 +1,1783 @@
+swagger: '2.0'
+info:
+  title: Couchbase Server API
+  description: API for interacting with the Couchbase Server cluster manager
+  version: "4.5.1"
+
+host: localhost:8091
+
+schemes:
+  - https
+  - http
+
+produces:
+  - application/json
+
+consumes:
+  - application/x-www-form-urlencoded
+
+securityDefinitions:
+  basicAuth:
+    type: basic
+    description: HTTP Basic Authentication. Works over `HTTP` and `HTTPS`
+    
+paths:
+  /diag:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - diag
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /diag/ale:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - diag
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /diag/masterEvents:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - diag
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /diag/password:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - diag
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /diag/vbuckets:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - diag
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /indexStatus:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /internalSettings:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /logs:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /nodeStatuses:
+    get:
+      summary: Retrieve basic node replication information
+      description: Retrieve basic node replication information.
+      responses:
+        200:
+          description: Success
+          examples:
+            application/json:
+              192.0.2.0:8091:
+                status: healthy
+                gracefulFailoverPossible: false
+                otpNode: ns_1@127.0.0.1
+                dataless: false
+                replication: 0
+        401:
+          description: Unauthorized         
+              
+  /nodes/{node_id}:
+    get:
+      summary: Retrieve information about a given node
+      description: Retrieve information about a given node.
+      parameters:
+        - $ref: '#/parameters/NodeID'
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request. Occurs due to the node not being recognised by the cluster.
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /nodes/self/xdcrSSLPorts:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools:
+    get:
+      summary: Retrieve cluster information
+      description: A pool represents computing resources (machines, memory, CPU, disks) that are used to host Couchbase buckets. 
+        Couchbase Server clusters currently support only a single pool named default. This pool represents a high-level overview
+        of the Couchbase Server cluster that the node connected to is a part of. This endpoint is provided for backwards compatibility
+        and redirects to `/pools/default`.
+      tags:
+       - cluster
+      x-dita-path: get-pools
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/ClusterObject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default:
+    get:
+      summary: Retrieve cluster information
+      description: A pool represents computing resources (machines, memory, CPU, disks) that are used to host Couchbase buckets. 
+        Couchbase Server clusters currently support only a single pool named default. This pool represents a high-level overview
+        of the Couchbase Server cluster that the node connected to is a part of.
+      tags:
+        - cluster
+      x-dita-path: get-pools-default
+      parameters:
+        - $ref: "#/parameters/ETag"
+        - $ref: "#/parameters/WaitChange"
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/ClusterObject'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/bucket/{bucket_name}/recoveryStatus:
+    get:
+      summary: Retrieve recovery status of a bucket
+      description: TBD.
+      tags:
+        - bucket
+      x-dita-path: get-pools-default-bucket-bucketname-recoveryStatus
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+        - $ref: '#/parameters/RecoveryUuid'
+      responses:
+        200:
+          description: Success
+        400:
+          description: Bad request. Occurs due to not passing a recovery uuid as part of the query.
+          schema:
+            type: object
+            properties:
+              code:
+                description: Reason for the bad request
+                type: string
+                example: uuid_missing
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets:
+    get:
+      summary: Retrieve information on all buckets
+      description: This rest endpoint returns an array of bucket information, 
+        one element for each bucket in the cluster.
+      security:
+        - basicAuth: []
+      tags:
+        - bucket
+      x-dita-path: get-pools-default-buckets
+      x-example-1: The following curl command retrieves the bucket information from the cluster 
+        which the node `localhost` is a part of.
+      parameters:
+        - $ref: "#/parameters/ETag"
+        - $ref: "#/parameters/WaitChange"
+        - $ref: "#/parameters/SkipMap"
+        - $ref: "#/parameters/BasicStats"
+      responses:
+        200:
+          description: Success.
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Bucket"
+            minItems: 0
+            uniqueItems: true
+        401:
+          description: Unauthorized.
+              
+    post:
+      summary: Create a new bucket
+      description: This rest endpoint accepts a POST request to create a new bucket.
+      security:
+        - basicAuth: []
+      tags:
+        - bucket
+      x-dita-path: post-pools-default-buckets
+      x-example-1: The following curl command creates a `couchbase` bucket called `travel-sample`, authenticated with a bucket password of `bucket_password`. 
+        The bucket is using value eviction with a RAM quota of 1000MB, replica view indexing is disabled.
+      parameters:
+        - $ref: "#/parameters/AuthType"
+        - $ref: "#/parameters/BucketType"
+        - $ref: "#/parameters/EvictionPolicy"
+        - $ref: "#/parameters/FlushEnabled"
+        - $ref: "#/parameters/FormBucketName"
+        - $ref: "#/parameters/ParallelDBAndViewCompaction"
+        - $ref: "#/parameters/ProxyPort"
+        - $ref: "#/parameters/RamQuotaMB"
+        - $ref: "#/parameters/ReplicaIndex"
+        - $ref: "#/parameters/ReplicaNumber"
+        - $ref: "#/parameters/SaslPassword"
+        - $ref: "#/parameters/ThreadsNumber"
+      responses:
+        202:
+          description: Success.
+        400:
+          description: There were errors with the passed parameters.
+          schema:
+            type: object
+            properties:
+              errors:
+                type: object
+                properties:
+                  ramQuotaMB:
+                    type: string
+                    example: RAM quota specified is too large to be provisioned into this cluster.
+                  name:
+                    type: string
+                    example: Bucket with given name already exists
+                  replicaIndex:
+                    type: string
+                    example: replicaIndex can only be 1 or 0
+                  flushEnable:
+                    type: string
+                    example: flushEnabled can only be 1 or 0
+                  replicaNumber:
+                    type: string
+                    example: Replica number larger than 3 is not supported.
+                  threadsNumber:
+                    type: string
+                    example: The number of threads can't be less than 2
+                  evictionPolicy:
+                    type: string
+                    example: Eviction policy must be either 'valueOnly' or 'fullEviction'
+              summaries:
+                type: object
+                properties:
+                  ramSummaries:
+                    type: object
+                    properties:
+                      ramSummaries:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            example: 268435456
+                          otherBuckets:
+                            type: integer
+                            example: 209715200
+                          nodesCount:
+                            type: integer
+                            example: 1
+                          perNodeMegs:
+                            type: integer
+                            example: 100
+                          thisAlloc:
+                            type: integer
+                            example: 104857600
+                          thisUsed:
+                            type: integer
+                            example: 0
+                          free:
+                            type: integer
+                            example: -46137344
+                      hddSummary:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            exampple: 63381999616
+                          otherData:
+                            type: integer
+                            example: 9326771883
+                          otherBuckets:
+                            type: integer
+                            example: 180528059
+                          thisUsed:
+                            type: integer
+                            example: 0
+                          free:
+                            type: integer
+                            example: 53874699674
+
+
+        401:
+          description: Unauthorized.
+
+  /pools/default/buckets/@fts-{fts-id}/stats:
+    get:
+      summary: Retrieve stats for a given FTS index
+      description: Retrieve stats for a given FTS index.
+      tags:
+        - stats
+      x-dita-path: get-pools-default-buckets-fts-stats
+      parameters:
+        - name: fts-id
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/@index-{index-id}/stats:
+    get:
+      summary: Retrieve stats for a given global secondary index
+      description: Retrieve stats for a given global secondary index.
+      tags:
+        - stats
+      x-dita-path: get-pools-default-buckets-index-stats
+      parameters:
+        - name: index-id
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/@query/stats:
+    get:
+      summary: Retrieve query stats
+      description: Retrieve query stats.
+      tags:
+        - stats
+      x-dita-path: get-pools-default-buckets-query-stats
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/@xdcr-{xdcr-id}/stats:
+    get:
+      summary: Retrieve stats for a given XDCR replication
+      description: Retrieve stats for a given XDCR replication.
+      tags:
+        - stats
+      x-dita-path: get-pools-default-buckets-xdcr-stats
+      parameters:
+        - name: xdcr-id
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/{bucket_name}:
+    get:
+      summary: Retrieve bucket information for a specific bucket
+      description: Retrieve bucket information for a specific bucket.
+      tags:
+        - bucket
+      x-dita-path: get-pools-default-buckets-bucketname
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/{bucket_name}/ddocs:
+    get:
+      summary: Retrieve design documents for a specific bucket
+      description: Retrieve design documents for a specific bucket.
+      tags:
+        - bucket
+      x-dita-path: get-pools-default-buckets-bucketname-ddocs
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/{bucket_name}/docs:
+    get:
+      summary: Retrieve documents from a bucket
+      description: Internal. Retrieve documents from a bucket.
+      tags: 
+        - bucket
+      x-dita-path: get-pools-default-buckets-bucketname-docs
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/{bucket_name}/nodes:
+    get:
+      summary: Retrieve per-node information for a given bucket
+      description: Retrieve per-node information for a given bucket.
+      tags:
+        - bucket
+        - node
+      x-dita-path: get-pools-default-buckets-bucketname-nodes
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/{bucket_name}/nodes/{node_id}:
+    get:
+      summary: Retrieve information for a given bucket on a given node
+      description: Retrieves information for a given bucket on a given node.
+      tags:
+        - bucket
+        - node
+      x-dita-path: get-pools-default-buckets-bucketname-nodes-nodeid
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+        - $ref: '#/parameters/NodeID'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/{bucket_name}/nodes/{node_id}/stats:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - bucket
+        - node
+        - stats
+      x-dita-path: get-pools-default-buckets-bucketname-nodes-nodeid-stats
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+        - $ref: '#/parameters/NodeID'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/{bucket_name}/stats:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - bucket
+        - stats
+      x-dita-path: get-pools-default-buckets-bucketname-stats
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/buckets/{bucket_name}/stats/{stat_name}:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - bucket
+        - stats
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+        - name: stat_name
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/bucketsStreaming/{bucket_name}:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - bucket
+      parameters:
+        - $ref: '#/parameters/PathBucketName'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/certificate:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/certificate/node/{node_id}:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - node
+      parameters:
+        - $ref: '#/parameters/NodeID'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/overviewStats:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - stats
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/rebalanceProgress:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/remoteClusters:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/saslBucketsStreaming:
+    get:
+      summary: Test
+      description: Test
+      tags:
+        - bucket
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/serverGroups:
+    get:
+      summary: Retrieve information on server groups
+      description: Retrieves information on server groups.
+      tags:
+        - cluster
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/settings/memcached/effective/{node_id}:
+    get:
+      summary: Retrieve running memcached settings on a given node
+      description: Retrieve running memcached settings on a given node.
+      parameters:
+        - $ref: '#/parameters/NodeID'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/settings/memcached/global:
+    get:
+      summary: Retrieve global memcached settings
+      description: Retrieve global memcached settings.
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/settings/memcached/node/{node_id}:
+    get:
+      summary: Retrieve memcached settings on a given node
+      description: Retrieve memcached settings on a given node.
+      parameters:
+        - $ref: '#/parameters/NodeID'
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/settings/memcached/node/{node_id}/setting/{setting_name}:
+    get:
+      summary: Test
+      description: Test
+      parameters:
+        - $ref: '#/parameters/NodeID'
+        - name: setting_name
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/default/tasks:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /pools/nodes:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /poolsStreaming/default:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /sampleBuckets:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /sasl_logs:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /sasl_logs/{log_name}:
+    get:
+      summary: Test
+      description: Test
+      parameters:
+        - name: log_name
+          type: string
+          in: path
+          required: true
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/alerts:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/audit:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/autoCompaction:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/autoFailover:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/indexes:
+    get:
+      summary: Retrieve the global secondary index settings
+      description: This endpoint returns the current index settings for the cluster.
+      tags:
+        - index
+      x-dita-path: get-settings-indexes
+      x-example-1: The following example retrieves the global secondary index settings of the 
+        cluster that the node `localhost` is a part of.
+      responses:
+        200:
+          description: Success.
+          schema:
+            $ref: '#/definitions/IndexSettings'
+        401:
+          description: Unauthorized.
+
+    post:
+      summary: Set the global secondary index settings
+      description: This endpoint is used to update the global secondary index settings for the 
+        cluster. The request is handled and validated by the cluster manager and then delegated to
+        all relevant index nodes automatically. All changes to the index settings 
+        via this method apply to all index nodes in the cluster. Parameters which are not specified
+        are left unchanged, it is not necessary to specify all parameters in the body.
+      x-dita-path: post-settings-indexes
+      x-example-1: The following example sets the global secondary index settings.
+      tags:
+        - index
+      parameters:
+        - $ref: "#/parameters/StorageMode"
+        - $ref: "#/parameters/IndexerThreads"
+        - $ref: "#/parameters/MemorySnapshotInterval"
+        - $ref: "#/parameters/StableSnapshotInterval"
+        - $ref: "#/parameters/MaxRollbackPoints"
+        - $ref: "#/parameters/LogLevel"
+      responses:
+        200:
+          description: Success. Settings are updated and the new settings are returned in the 
+            response.
+          schema:
+            $ref: '#/definitions/IndexSettings'
+        401:
+          description: Unauthorized.
+
+          
+              
+  /settings/maxParallelIndexers:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/rbac/roles:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/rbac/users:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/readOnlyAdminName:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/replications:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/replications/{replication_id}:
+    get:
+      summary: Test
+      description: Test
+      parameters:
+        - name: replication_id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/saslauthdAuth:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/stats:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/viewUpdateDaemon:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+  /settings/web:
+    get:
+      summary: Test
+      description: Test
+      responses:
+        200:
+          description: Success
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+              
+definitions:
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
+  
+  Bucket:
+    type: object
+    properties:
+      name:
+        type: string
+        description: The name of this bucket.
+        example: travel-sample
+      bucketType:
+        type: string
+        description: The type of this bucket. A `membase` bucket is also known as a `couchbase` bucket.
+        enum: ["membase", "memcached"]
+        example: membase
+      authType:
+        type: string
+        description: The authentication method for this bucket.
+        enum: ["sasl", "none"]
+        example: sasl
+      saslPassword:
+        type: string
+        description: Password for SASL authentication. 
+          This is used if `authType` is `sasl`. 
+          An empty string represents having no password
+        example: password
+      proxyPort:
+        type: integer
+        description: The port used to proxy requests, this is used if the `authType` is `none`.
+        minimum: 0
+        example: 0
+      replicaIndex:
+        type: boolean
+        description: Boolean indicating whether or not replica view indexes are enabled for this bucket.
+        example: true
+      uri:
+        type: string
+        description: The endpoint to retrieve bucket information for this bucket.
+        example: /pools/default/buckets/travel-sample?bucket_uuid=bfaccbdeab775313915cd2cee84cc4b0
+      streamingUri:
+        type: string
+        description: The endpoint to retrieve the streaming version of /pools/default/buckets/{bucket_name}
+        example: /pools/default/bucketsStreaming/travel-sample?bucket_uuid=bfaccbdeab775313915cd2cee84cc4b0
+      localRandomKeyUri:
+        type: string
+        description: Endpoint used to select a random key from this bucket.
+        example: /pools/default/buckets/travel-sample/localRandomKey
+      controllers:
+        type: object
+        properties:
+          compactAll:
+            type: string
+            description: Endpoint used to trigger a manual compaction of this bucket.
+            example: /pools/default/buckets/travel-sample/controller/compactBucket
+          purgeDeletes:
+            type: string
+            description: Endpoint used to trigger an unsafe purge of tombstones in this bucket.
+            example: /pools/default/buckets/travel-sample/controller/unsafePurgeBucket
+          startRecovery:
+            type: string
+            description: Endpoint used to start the recovery of this bucket if it is failed over.
+            example: /pools/default/buckets/travel-sample/controller/startRecovery
+      nodes:
+        type: array
+        description: Array of nodes associated with this bucket.
+        items:
+          $ref: "#/definitions/BucketNode"
+      stats:
+        type: object
+        description: The URIs for various bucket statistics.
+        properties:
+          uri:
+            type: string
+            description: The URI to access the statistics associated with this bucket.
+            example: /pools/default/buckets/travel-sample/stats
+          directoryURI:
+            type: string
+            description: The URI to access the stats directory for this bucket.
+            example: /pools/default/buckets/travel-sample/statsDirectory
+          nodeStatsListURI:
+            type: string
+            description: The URI to access the per-node stats for this bucket.
+            example: /pools/default/buckets/travel-sample/nodes
+      ddocs:
+        type: object
+        properties:
+          uri:
+            type: string
+            description: The URI to access the design documents for this bucket.
+            example: /pools/default/buckets/travel-sample/ddocs
+      nodeLocator:
+        type: string
+        example: "vbucket"
+      autoCompactionSettings:
+        description: The autocompaction settings for this bucket if the cluster-wide setting
+          has been overridden. This is an object containing the overriding settings if they are used,
+          otherwise this is the boolean `false`.
+        example: false
+      uuid:
+        type: string
+        description: The uuid associated with this particular bucket.
+        example: bfaccbdeab775313915cd2cee84cc4b0
+      replicaNumber:
+        type: integer
+        description: The number of replicas for this bucket.
+        minimum: 0
+        maximum: 3
+        example: 1
+      threadsNumber:
+        type: integer
+        description: In Couchbase Server versions prior to 3.0, this represented the
+          number of reader and writer threads dedicated to a particular bucket. Since
+          then this setting has been superceded bucket IO priority, although the interface
+          is unchanged. A value of 3 represents a `low` bucket priority and a value of 8
+          represents a `high` bucket priority.
+        minimum: 2
+        maximum: 8
+        example: 3
+      quota:
+        type: object
+        description: The various memory quotas for this bucket.
+        properties:
+          ram:
+            type: integer
+            description: The RAM allocated to the bucket on each individual node, measured in bytes.
+            example: 104857600
+          rawRAM:
+            type: integer
+            description: The RAM allocated accross to the bucket accross all nodes in the cluster, measured in bytes.
+            example: 104857600
+      basicStats:
+        type: object
+        description: A collection of basic statistics for this bucket.
+        properties:
+          quotaPercentUsed:
+            type: number
+            description: The percentage (%) of the bucket quota currently being used averaged across all nodes.
+            format: float
+            example: 68.44169616699219
+          opsPerSec:
+            type: integer
+            description: The average number of operations per second in the past 60 seconds.
+            example: 108.9808274470232
+          diskFetches:
+            type: integer
+            description: The number of disk fetches.
+            example: 0
+          itemCount:
+            type: integer
+            description: The total number of active items in this bucket.
+            example: 31592
+          diskUsed:
+            type: integer
+            description: The total amount of disk space used by this bucket across all nodes.
+            example: 144936855
+          dataUsed:
+            type: integer
+            description: The total amount of disk space used by useful data in this bucket across all nodes.
+            example: 113478832
+          memUsed:
+            type: integer
+            description: The total amount of memory used by this bucket across all nodes.
+            example: 71766320
+      evictionPolicy:
+        type: string
+        description: The ejection policy used by this bucket.
+        enum: ["valueOnly", "fullEviction"]
+        example: valueOnly
+      timeSynchronization:
+        type: string
+        description: Whether this bucket has been appropriately set up for time synchronization (used for LWW).
+        example: disabled
+        enum: ["disabled", "enabledWithDrift", "enabledWithoutDrift"]
+      bucketCapabilitiesVer:
+        type: string
+        example: ""
+
+  BucketNode:
+    type: object
+    description: An object containing information about a bucket on a particular node.
+    properties:
+      couchApiBaseHTTPS:
+        type: string
+        example: https://192.0.2.0:18092/travel-sample%2Bbfaccbdeab775313915cd2cee84cc4b0
+      couchApiBase:
+        type: string
+        example: http://192.0.2.0:8092/travel-sample%2Bbfaccbdeab775313915cd2cee84cc4b0
+      systemStats:
+        $ref: "#/definitions/SystemStats"
+      interestingStats:
+        $ref: "#/definitions/InterestingStats"
+      uptime:
+        type: string
+        description: Number of seconds that Couchbase Server has been running on this node.
+        example: "88214"
+      memoryTotal:
+        type: integer
+        description: Total amount of memory available on this node.
+        example: 1044230144
+      memoryFree:
+        type: integer
+        description: Unused memory on this node, measured in bytes.
+        example: 303661056
+      mcdMemoryReserved:
+        type: integer
+        description: Amount of memory reserved for memcached on this node, measured in MB.
+        example: 796
+      mcdMemoryAllocated:
+        type: integer
+        description: Amount of memory allocated to memcached on this node, measured in MB.
+        example: 796
+      replication:
+        type: integer
+        description: Number of other nodes that this node is replicating to.
+        example: 0
+      clusterMembership:
+        type: string
+        description: The current status of this node's cluster membership
+        enum: ["active", "inactiveFailed", "inactiveAdded"]
+        example: active
+      recoveryType:
+        type: string
+        description: Internal only.
+        example: none
+      status:
+        type: string
+        description: The current status of the node, i.e whether or not it is healthy.
+        enum: ["healthy"]
+        example: healthy
+      otpNode:
+        type: string
+        description: The name of this node in the cluster config.
+        example: ns_1@127.0.0.1
+      thisNode:
+        type: boolean
+        description: Whether or not this is the node the request was routed to.
+        example: true
+      hostname:
+        type: string
+        description: The hostname of this node.
+        example: 192.0.2.0:8091
+      clusterCompatibility:
+        type: integer
+        description: Internal only.
+        example: 262149
+      version:
+        type: string
+        description: The version string of Couchbase Server running on this node.
+        example: "4.5.1-2844-enterprise"
+      os:
+        type: string
+        description: The operating system being used on this node.
+        example: "x86_64-unknown-linux-gnu"
+      ports:
+        type: object
+        properties:
+          sslProxy:
+            type: integer
+            description: The port used to proxy incoming ssl requests.
+            example: 11214
+          httpsMgmt:
+            type: integer
+            description: The https port for management and administration requests.
+            example: 18091
+          httpsCAPI:
+            type: integer
+            description: The https port for CAPI requests.
+            example: 18092
+          proxy:
+            type: integer
+            description: The port used for data access via a proxy.
+            example: 11211
+          direct:
+            type: integer
+            description: The port used for direct data access.
+            example: 11210
+      services:
+        type: array
+        description: The services running on this node.
+        items:
+          type: string
+          enum: ["fts", "index", "kv", "n1ql"]
+          example: "kv"
+        uniqueItems: true
+  
+  Node:
+    type: object
+    description: Overview of a particular node.
+    properties:
+      availableStorage:
+        type: array
+        items:
+          - $ref: "#/definitions/HDDElement"
+
+  HDDElement:
+    type: object
+    properties:
+      path:
+        type: string
+        description: Path of the particular mount point
+        example: /opt/couchbase/var
+      sizeKBytes:
+        type: integer
+        description: Size of the mount point in Kilobytes
+        example: 18745336
+      usagePercent:
+        type: integer
+        description: Percentage (%) of the disk space that has been used
+        example: 8
+
+  SystemStats:
+    type: object
+    description: System-level statistics.
+    properties:
+      cpu_utilization_rate:
+        type: number
+        description: The total CPU utilization of the system, measured as a percentage of total CPU capacity.
+        format: float
+        example: 3.191489361702128
+      swap_total:
+        type: integer
+        description: The amount of swap space available on the system, measured in bytes.
+        example: 1214005248
+      swap_used:
+        type: integer
+        description: The amount of swap space currently being used, measured in bytes.
+        example: 0
+      mem_total:
+        type: integer
+        description: The total amount of memory on the system, measured in bytes.
+        example: 1044230144
+      mem_free:
+        type: integer
+        description: The memory free on the system, measured in bytes.
+        example: 284753920
+  
+  InterestingStats:
+    type: object
+    properties:
+      cmd_get:
+        type: number
+        description: The number of `gets` per second.
+        format: float
+        example: 108.9808274470232
+      couch_docs_actual_disk_size:
+        type: integer
+        description: The total size on disk of useful data in data files for this bucket, measured in bytes.
+        example: 101979001
+      couch_docs_disk_size:
+        type: integer
+        description: The total size on disk of data files for this bucket, measured in bytes.
+        example: 92036096
+      couch_spatial_data_size:
+        type: integer
+        description: The total size on disk of useful data in spatial view files, measured in bytes.
+        example: 21442736
+      couch_spatial_disk_size:
+        type: integer
+        description: The total size on disk of spatial view files, measured in bytes.
+        example: 21478927
+      couch_views_actual_disk_size:
+        type: integer
+        description: The total size on disk of map-reduce view files, measured in bytes.
+        example: 21478927
+      couch_views_data_size:
+        type: integer
+        description: The total size on disk of useful data in map-reduce views, measured in bytes.
+        example: 0
+      curr_items:
+        type: integer
+        description: The number of active documents.
+        example: 31592
+      curr_items_tot:
+        type: integer
+        description: The total number of documents (both active and replica).
+        example: 31592
+      ep_bg_fetched:
+        type: integer
+        description: The number of documents fetched from disk per second.
+        example: 0
+      get_hits:
+        type: number
+        description: The number of get requests for which the document requested exists, measured in documents per second.
+        format: float
+        example: 108.9808274470232
+      mem_used:
+        type: integer
+        description: The amount of memory currently in use, measured in bytes.
+        example: 71766320
+      ops:
+        type: number
+        description: Number of operations per second.
+        format: float
+        example: 108.9808274470232
+      vb_replica_curr_items:
+        type: integer
+        description: Total number of replica items.
+        example: 0
+  
+  ClusterObject:
+    type: object
+    properties:
+      componentsVersion:
+        type: object
+        properties:
+          ale:
+            type: string
+            example: 4.5.1-2844-enterprise
+          asn1:
+            type: string
+            example: 2.0.4
+          crypto:
+            type: string
+            example: 3.2
+          inets:
+            type: string
+            example: 5.9.8
+          kernel:
+            type: string
+            example: 2.16.4
+          lhttpc:
+            type: string
+            example: 1.3.0
+          ns_server:
+            type: string
+            example: 4.5.1-2844-enterprise
+          os_mon:
+            type: string
+            example: 2.2.14
+          public_key:
+            type: string
+            example: 0.21
+          sasl:
+            type: string
+            example: 2.3.4
+          ssl:
+            type: string
+            example: 5.3.3
+          stdlib:
+            type: string
+            example: 1.19.4
+      implementationVersion:
+        type: string
+        example: 4.5.1-2844-enterprise
+      isAdminCreds:
+        type: boolean
+        example: true
+      isEnterprise:
+        type: boolean
+        example: true
+      isROAdminCreds:
+        type: boolean
+        example: false
+      pools:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              example: default
+            streamingUri:
+              type: string
+              example: /poolsStreaming/default?uuid=05b96cfd8faa5965e2f0931c93d20cc6
+            uri:
+              type: string
+              example: "/pools/default?uuid=05b96cfd8faa5965e2f0931c93d20cc6"
+
+  IndexSettings:
+    type: object
+    properties:
+      storageMode:
+        type: string
+        example: forestdb
+        enum: ['forestdb', 'memory_optimized']
+      indexerThreads:
+        type: integer
+        example: 0
+      memorySnapshotInterval:
+        type: integer
+        example: 200
+      stableSnapshotInterval:
+        type: integer
+        example: 5000
+      maxRollbackPoints:
+        type: integer
+        example: 5
+      logLevel:
+        type: string
+        enum: ["silent", "fatal", "error", "warn", "info", "verbose", "timing", "debug", "trace"]
+        example: info
+
+parameters:
+  PathBucketName:
+    name: bucket_name
+    in: path
+    type: string
+    required: true
+    description: name of a bucket
+
+  NodeID:
+    name: node_id
+    type: string
+    in: path
+    required: true
+    description: id of a node
+  
+  AuthType:
+    name: authType
+    description: Type of authentication to be used by a bucket. Specifying `sasl` causes the bucket to use SASL mechanisms to provide authenticated access to the bucket. 
+      Specifying `none` results in no authentication being applied for the bucket, although an alternative proxy port must be specified to allow access.
+    in: formData
+    type: string
+    enum: ["sasl", "none"]
+    required: true
+    x-example-1: sasl
+    
+  BucketType:
+    name: bucketType
+    description: Type of bucket to create.
+    in: formData
+    type: string
+    enum: ["memcached", "couchbase"]
+    required: true
+    x-example-1: couchbase
+
+  EvictionPolicy:
+    name: evictionPolicy
+    description: Ejection policy to be used by a bucket. `valueOnly` removes data from the cache but keeps all keys and metadata fields for non-resident items.
+       `fullEviction` removes all data including keys, metadata, and key-value pairs from the cache for non-resident items. 
+       Full ejection is well suited for cases where the application has cold data that is not accessed frequently or the total data size is too large to fit in memory plus higher latency access to the data is accepted.
+    in: formData
+    type: string
+    enum: ["valueOnly", "fullEviction"]
+    default: "valueOnly"
+    x-example-1: valueOnly
+  
+  FlushEnabled:
+    name: flushEnabled
+    description: Whether or not the `flush` operation is enabled on this bucket. 
+      A value of `1` enables the ability to trigger the 'flush' operation for the bucket while a value of `0` disables the ability to trigger a `flush`.
+    in: formData
+    type: integer
+    enum: [0, 1]
+    default: 0
+
+  FormBucketName:
+    name: name
+    description: Name of the bucket to create. The bucket name can only contain characters in range A-Z, 
+      a-z, 0-9 as well as underscore, period, dash and percent and can be a maximum of 100 characters in length. The bucket name cannot be changed after bucket creation.
+    in: formData
+    type: string
+    maxLength: 100
+    minLength: 1
+    required: true
+    x-example-1: travel-sample
+
+  ParallelDBAndViewCompaction:
+    name: parallelDBAndViewCompaction
+    description: Indicates whether database and view files on disk can be compacted simultaneously. A value of `1` enables parallel compaction while a value of `0` disables parallel compaction.
+    in: formData
+    type: integer
+    enum: [0, 1]
+    default: 0
+  
+  ProxyPort:
+    name: proxyPort
+    description: Proxy port on which the bucket communicates and is used to identify the buckets. Must be specified if the bucket is not using `SASL` authentication. 
+      You can place non-SASL buckets on any available port except port 11211, which is reserved for the default bucket, you can place only one non-SASL bucket on an individual port.
+      A value of `0` represents not specifying a proxy port.
+    in: formData
+    type: integer
+    default: 0
+
+  RamQuotaMB:
+    name: ramQuotaMB
+    description: RAM Quota for the bucket in MB. The maximum can only be as great as the memory quota established for the node. 
+      If other buckets are associated with a node, RAM Quota can only be as large as the amount memory remaining for the node, accounting for the other bucket memory quota.
+    in: formData
+    type: integer
+    minimum: 100
+    required: true
+    x-example-1: 1000
+  
+  ReplicaIndex:
+    name: replicaIndex
+    description: Whether replica view indexing is enabled for this bucket. Couchbase server recreates indexes using the replicated data on a node for each defined design document and view. 
+      Replica indexes enable you to perform queries even in the event of node failure as the replica index is queried while the active index is being rebuilt. A value of `1` enables replica indexing
+      while a value of `0` disables replica indexing. This setting cannot be changed once the bucket has been created.
+    in: formData
+    type: integer
+    default: 1
+    enum: [0, 1]
+    x-example-1: 0
+    
+  ReplicaNumber:
+    name: replicaNumber
+    description: Number of replicas for the bucket.
+    in: formData
+    type: integer
+    minimum: 0
+    maximum: 3
+    default: 1
+  
+  SaslPassword:
+    name: saslPassword
+    description: Password for bucket access via smart clients. Required if SASL authentication has been enabled. An empty string value means that the bucket has no password set.
+    in: formData
+    type: string
+    maxLength: 24
+    x-example-1: 'bucket_password'
+  
+  ThreadsNumber:
+    name: threadsNumber
+    description: Previous versions of Couchbase Server, version 3.0 or earlier, required the I/O thread allocation per bucket to be configured manually. Buckets allocated six to eight 
+      (6-8) threads are marked high priority in bucket settings. Buckets allocated three to five (3-5) threads are marked low priority in bucket settings.
+    in: formData
+    type: integer
+    maximum: 8
+    minimum: 3
+    default: 3
+
+  ETag:
+    name: etag
+    description: An opaque identifier for this specific resource used for web cache validation.
+    in: query
+    type: string
+    
+  WaitChange:
+    name: waitChange
+    description: How long the server should wait after receiving the request to return the response.
+    in: query
+    type: integer
+
+  RecoveryUuid:
+    name: recovery_uuid
+    description: UUID assigned to a particular vbucket recovery method.
+    in: query
+    type: string
+
+  SkipMap:
+    name: skipMap
+    description: Whether or not the vbucket map should be included in the return value. 
+      A value of `true` will cause the vbucket map to not be included.
+    type: boolean
+    in: query
+    default: false
+
+  BasicStats:
+    name: basic_stats
+    description: Primarily for internal use. Whether to display extended basic statistics or not. If `true`
+      then extended statistics are displayed.
+    type: boolean
+    in: query
+    default: false
+
+  StorageMode:
+    name: storageMode
+    description: The storage mode to be used for all global secondary indexes in the cluster. A value of
+      `forestdb` sets the cluster-wide index storage mode to use ForestDB which can utilize both 
+      memory and persistent storage for index maintenance and index scans. A value of 
+      `memory_optimized` sets the cluster-wide index storage mode to use memory optimized global 
+      secondary indexes which can perform index maintenance and index scan faster at in-memory speeds.
+      This setting can only be changed while there are no index nodes in the cluster. 
+      To change from standard GSI to memory optimized GSI or vice versa, you need to remove all the index service nodes in the cluster. 
+    type: string
+    in: formData
+    x-example-1: forestdb
+    enum: ['forestdb', 'memory_optimized']
+
+  IndexerThreads:
+    name: indexerThreads
+    description: Number of threads for the `indexer` process to use, this applies equally to all index nodes in the cluster regardless
+      of the number of cores on each node. A value of `0` causes the `indexer` process to use one thread per CPU core on each individual node.
+    type: integer
+    in: formData
+    x-example-1: 0
+
+  MemorySnapshotInterval:
+    name: memorySnapshotInterval
+    description: InMemory snapshotting interval in milliseconds.
+    type: integer
+    in: formData
+    x-example-1: 200
+
+  StableSnapshotInterval:
+    name: stableSnapshotInterval
+    description: Persisted snapshotting interval in milliseconds.
+    type: integer
+    in: formData
+    x-example-1: 5000
+
+  MaxRollbackPoints:
+    name: maxRollbackPoints
+    description: Maximum number of committed rollback points.
+    type: integer
+    in: formData
+    x-example-1: 5
+    
+  LogLevel:
+    name: logLevel
+    description: Indexer logging level.
+    type: string
+    in: formData
+    enum: ["silent", "fatal", "error", "warn", "info", "verbose", "timing", "debug", "trace"]
+    x-example-1: info
