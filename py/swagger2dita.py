@@ -115,8 +115,6 @@ def getTopic(p,d):
     if 'responses' in d[verb]:
       out = out + writeCodes(d[verb]['responses'],d[verb]['produces'])
     out = out + '</div>\n\
-      <div class="+ vs/api http/fields ">\n\
-      </div>\n\
     </section>\n\
   </body>\n\
 </topic>\n'
