@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bookmap PUBLIC "-//OASIS//DTD DITA BookMap//EN" "bookmap.dtd">
+<bookmap xml:lang="en">
+    <booktitle>
+        <mainbooktitle>Swagger Project name</mainbooktitle>
+        <booktitlealt>API Guide</booktitlealt>
+    </booktitle>
+    <bookmeta>
+        <critdates>
+            <revised modified="__DATE__"/>
+        </critdates>
+        <prodinfo>
+            <prodname>Vade Secure Cloud API</prodname>
+            <vrmlist>
+                <vrm version="3" release="0"/>
+            </vrmlist>
+        </prodinfo>
+    </bookmeta>
+    <frontmatter>
+        <!-- <topicref processing-role="resource-only" keys="keys" href="common/keys.dita"/> -->
+        <booklists>
+            <toc/>
+        </booklists>
+    </frontmatter>
+    <!-- <chapter navtitle="Overview">
+        <topicref href="ov/auth.dita"/>
+        <topicref href="ov/error_codes.dita"/>
+    </chapter> -->
+    __CHAPTERS_LIST__
+    <backmatter>
+        <booklists>
+            <indexlist toc="yes"/>
+        </booklists>
+    </backmatter>
+</bookmap>

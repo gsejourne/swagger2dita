@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="vs-why" default="clean.out" basedir=".">
+	<description>Build Vade Secure WHY API Documentation</description>
+
+	<property environment="env"/>
+	<condition property="dita.home" value="${basedir}/..">
+		<not><isset property="env.DITA_HOME"/></not>
+	</condition>
+	<property name="dita.home" location="${env.DITA_HOME}"/>
+	<property name="dita.dir" location="${env.DITA_HOME}"/>
+	<property name="dita.temp.dir" location="/tmp/dita-builds/iip"/>
+	<property name="comp" value="VCK"/>
+	<property name="product" value="API"/>
+	
+	<import file="${dita.dir}/build.xml"/>
+
+	<!-- Invert values for debug 
+	<property name="retain.topic.fo" value="yes"/>
+	<property name="clean.temp" value="no"/> -->
+
+	<target name="api">
+		<getVersion in="APIGuide_EN.ditamap"/>
+		<property file="${out.dir}/version.properties"/>
+		<property name="args.draft" value="yes"/>
+		<doc in="APIGuide_EN.ditamap" lang="EN" type="API">
+			<pdf>
+				<echo>*** VS *** Building @{lang} PDF version of @{type} Guide</echo>
+				<antcall target="pdf"/>
+			</pdf>
+		</doc>
+	</target>
+
+</project>
