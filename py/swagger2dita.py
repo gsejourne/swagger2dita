@@ -102,8 +102,10 @@ def getTopic(p,d):
       <div class="+ vs/api http/headers ">\n'
     if 'consumes' in d[verb]:
       out = out + writeHeaders(d[verb]['consumes'],d[verb]['parameters'],d[verb]['produces'])
-    else:
+    elif 'parameters' in d[verb]:
       out = out + writeHeaders(None,d[verb]['parameters'],d[verb]['produces'])
+    elif 'produces' in d[verb]:
+      out = out + writeHeaders(None,None,d[verb]['produces'])
     out = out + '</div>\n'
     if len(d[verb]['parameters']) > 0:
       out = out + '<div class="+ vs/api http/fields ">\n\
